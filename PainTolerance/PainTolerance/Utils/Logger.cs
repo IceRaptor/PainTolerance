@@ -18,7 +18,7 @@ namespace PainTolerance {
             LogStream = File.AppendText(LogFile);
         }
 
-        public void LogIfDebug(string message) { if (PainTolerance.Config.Debug) { Log(message); } }
+        public void LogIfDebug(string message) { if (PainTolerance.Config.Debug) { Log("[DBG] " + message); } }
 
         public void Log(string message) {
             string now = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture);

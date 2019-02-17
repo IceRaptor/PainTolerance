@@ -8,16 +8,18 @@ namespace PainTolerance.Patches {
     [HarmonyAfter(new string[] { "MechEngineer" })]
     [HarmonyPatch(typeof(Mech), "DamageLocation")]
     public static class Mech_DamageLocation {
-        public static void Postfix(Mech __instance, WeaponHitInfo hitInfo, ArmorLocation aLoc, Weapon weapon, float totalDamage, int hitIndex, 
+        public static void Prefix(Mech __instance, WeaponHitInfo hitInfo, ArmorLocation aLoc, Weapon weapon, float totalDamage, int hitIndex, 
             AttackImpactQuality impactQuality, DamageType damageType) {
-
 
             if (aLoc == ArmorLocation.Head) {
                 PainTolerance.Logger.Log($"Head hit from weapon:{weapon?.UIName} for {totalDamage} damage. Quality was:{impactQuality} with type:{damageType}");
 
                 float currHeadArmor = __instance.GetCurrentArmor(aLoc);
                 int damageMod = (int)totalDamage;
-                if (totalDamage - currHeadArmor > 0) {                    
+                float damageThroughArmor = totalDamage - currHeadArmor;
+                PainTolerance.Logger.LogIfDebug($"TotalDamage:{totalDamage} - Head armor:{currHeadArmor} = throughArmor:{damageThroughArmor}");
+
+                if (totalDamage - currHeadArmor <= 0) {                    
                     damageMod = (int)Math.Floor(damageMod * PainTolerance.Config.HeadHitArmorOnlyMulti);
                     PainTolerance.Logger.Log($"Head hit impacted armor only, reduced damage to:{damageMod}");
                 }
@@ -29,6 +31,7 @@ namespace PainTolerance.Patches {
     }
 
     [HarmonyAfter(new string[] { "MechEngineer" })]
+    [HarmonyPatch(typeof(AmmunitionBox), "DamageComponent")]
     public static class AmmunitionBox_DamageComponent {
         public static void Prefix(AmmunitionBox __instance, WeaponHitInfo hitInfo, ComponentDamageLevel damageLevel, bool applyEffects, CombatGameState ___combat) {
             if (applyEffects && damageLevel == ComponentDamageLevel.Destroyed && ___combat.Constants.PilotingConstants.InjuryFromAmmoExplosion) {
@@ -73,7 +76,7 @@ namespace PainTolerance.Patches {
 
                     int overheatPenalty = (int)Math.Floor(overheatRatio * PainTolerance.Config.PenaltyPerHeatDamageInjuryRatio);
                     PainTolerance.Logger.LogIfDebug($"overheatPenalty:{overheatPenalty} = " +
-                        $"Floor( overheatRatio:{overheatRatio} * penaltyPerOverheatDamage{PainTolerance.Config.PenaltyPerHeatDamageInjuryRatio}");
+                        $"Floor( overheatRatio:{overheatRatio} * penaltyPerOverheatDamage{PainTolerance.Config.PenaltyPerHeatDamageInjuryRatio} )");
                     ModState.InjuryResistPenalty = overheatPenalty;
                 }
 

@@ -1,26 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using BattleTech;
 
 namespace PainTolerance {
     public class PilotHelper {
-
-        private static readonly Dictionary<int, int> ModifierBySkill = new Dictionary<int, int> {
-            { 1, 0 },
-            { 2, 1 },
-            { 3, 1 },
-            { 4, 2 },
-            { 5, 2 },
-            { 6, 3 },
-            { 7, 3 },
-            { 8, 4 },
-            { 9, 4 },
-            { 10, 5 },
-            { 11, 6 },
-            { 12, 7 },
-            { 13, 8 }
-        };
 
         public static int GetGunneryModifier(Pilot pilot) {
             return GetModifier(pilot, pilot.Gunnery, "AbilityDefG5", "AbilityDefG8");
@@ -40,15 +23,16 @@ namespace PainTolerance {
 
         public static int GetModifier(Pilot pilot, int skillValue, string abilityDefIdL5, string abilityDefIdL8) {
             int normalizedVal = NormalizeSkill(skillValue);
-            int mod = ModifierBySkill[normalizedVal];
+            int mod = normalizedVal;
             foreach (Ability ability in pilot.Abilities.Distinct()) {
-                PainTolerance.Logger.LogIfDebug($"Pilot {pilot.Name} has ability:{ability.Def.Id}.");
+                //PainTolerance.Logger.LogIfDebug($"Pilot {pilot.Name} has ability:{ability.Def.Id}.");
                 if (ability.Def.Id.ToLower().Equals(abilityDefIdL5.ToLower()) || ability.Def.Id.ToLower().Equals(abilityDefIdL8.ToLower())) {
                     PainTolerance.Logger.LogIfDebug($"Pilot {pilot.Name} has targeted ability:{ability.Def.Id}, boosting their modifier.");
                     mod += 1;
                 } 
 
             }
+            PainTolerance.Logger.LogIfDebug($"Pilot {pilot.Name} has final modifier:{mod} from normalizedSkill:{normalizedVal} and ability boosts.");
             return mod;
         }
 
