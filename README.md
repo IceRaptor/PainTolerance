@@ -6,25 +6,25 @@ This check is also made in the event of a Shutdown, if the optional _ShutdownCau
 
 ## Details
 
-Each pilot's resist check is defined by their rating in the Guts skill, as well as any Abilities in that tree that have been taken. The table below defines the guts modifier that will be used as a modifier base. This value is then multiplied by the **ResistPerGuts** configuration value to determine a base check level. 
+Each pilot's resist check is defined by their rating in the Guts skill, as well as any Abilities in that tree that have been taken. The table below defines the guts modifier that will be used as a modifier base. This value is then multiplied by the **ResistPerGuts** configuration value to determine a base check level. Pilot skills of 11-13 are used for elite pilots in the RogueTech mod. Player pilots cannot reach this level.
 
-Pilot skills of 11-13 are used for elite pilots in the [RogueTech](www.roguetech.org) mod. Player pilots cannot reach this level.
+Assuming a *ResistPerGuts* value of 10, this table defines the resist chance per guts rating:
 
 | Skill                | 1    | 2    | 3    | 4    | 5    | 6    | 7    | 8    | 9    | 10   | 11   | 12   | 13   |
 | -------------------- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
-| Modifier             | +0   | +1   | +1   | +2   | +2   | +3   | +3   | +4   | +4   | +5   | +6   | +7   | +8   |
-| with Level 5 Ability | +0   | +1   | +1   | +2   | +3   | +4   | +4   | +5   | +5   | +6   | +7   | +8   | +9   |
-| with Level 8 Ability | +0   | +1   | +1   | +2   | +4   | +5   | +5   | +6   | +6   | +7   | +8   | +9   | +10  |
+| Modifier             | 10% | 20% | 30% | 40% | 50% | 60% | 70% | 80% | 90% | 100% | 110% | 120% | 130% |
+| with Level 5 Ability | 10% | 20% | 30% | 40% | 60% | 70% | 80% | 90% | 100% | 110% | 120% | 130% | 140% |
+| with Level 8 Ability | 10% | 20% | 30% | 40% | 70% | 80% | 90% | 100% | 110% | 120% | 130% | 140% | 150% |
 
-> Example: A pilot has guts 5 and the level 5 ability. Their base modifier is +3, which is multiplied by the ResistPerGuts config value of 15%. This gives them a 45% modifier to ignore damage sources. If the pilot improves their Guts skill to 6, their modifier would increase to 60%.
+> Example: A pilot has guts 5 and the level 5 ability. This gives them a 60% modifier to ignore damage sources. If the pilot improves their Guts skill to 6, their modifier would increase to 70%.
 
 ### Head Injuries
 
 When a mech's head is hit, each point of damage reduces the resist chance by the **PenaltyPerHeadDamage** configuration value. If the attack only inflicts armor damage, the total damage is multiplied by the **HeadHitArmorOnlyMulti** value. By default this reduces the damage amount by 50%, making it easier for players to shrug off the hit.
 
-> Example: A pilot with guts 7 (but no abilities) gets hit in the head of 3 damage. The damage doesn't penetrate the armor, so it becomes 3 * 0.5 = 1.5, rounded down to 1. The pilot's resist chance is 45% - 5% for the damage, or 40%.
+> Example: A pilot with guts 7 (but no abilities) gets hit in the head of 3 damage. The damage doesn't penetrate the armor, so it becomes 3 * 0.5 = 1.5, rounded down to 1. The pilot's resist chance is 70% - 5% for the damage, or 65%.
 >
-> Example 2: A pilot with guts 10 and both abilities gets hit in the head for 18 damage. Some of the damage penetrates structure. The pilot's base resist chance is 7 * 15 =105%. The attack reduces that check by 18 * 5% = 90%. The pilot has 15% chance to avoid the injury.
+> Example 2: A pilot with guts 10 and both abilities gets hit in the head for 18 damage. Some of the damage penetrates structure. The pilot's base resist chance is 120%. The attack reduces that check by 18 * 5% = 90%. The pilot has 30% chance to avoid the injury.
 
 ### Overheat Injuries
 
