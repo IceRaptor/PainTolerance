@@ -10,5 +10,13 @@
     "DependsOn" : [ ],
     "Settings": {
         "Debug" : true,
+        "ResistPerGuts" : 15,
+        "PenaltyPerHeadDamage" : 5,
+        "PenaltyPerAmmoExplosionRatio" : ,
+        "PenaltyPerHeatDamageInjuryRatio" : 1,
+        "KnockdownDamage" : 6,
+        "ShutdownDamage" : 12, 
+        "TorsoDestroyedDamage" : 10,
+        "HeadHitArmorOnlyMulti" : 0.5
     }
 }

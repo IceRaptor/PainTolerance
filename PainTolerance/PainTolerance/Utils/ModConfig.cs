@@ -18,8 +18,6 @@ namespace PainTolerance {
 
         public float KnockdownDamage = 6f;
 
-        public float ShutdownDamage = 12f;
-
         public float TorsoDestroyedDamage = 10f;
 
         public float HeadHitArmorOnlyMulti = 0.5f;
@@ -27,7 +25,7 @@ namespace PainTolerance {
         public override string ToString() {
             return $"Debug:{Debug}, ResistPerGuts:{ResistPerGuts}, PenaltyPerHeadDamage:{PenaltyPerHeadDamage}, " +
                 $"PenaltyPerAmmoExplosionRatio:{PenaltyPerAmmoExplosionRatio}, PenaltyPerHeatDamageInjuryRatio:{PenaltyPerHeatDamageInjuryRatio}, " +
-                $"KnockdownDamage:{KnockdownDamage}, ShutdownDamage:{ShutdownDamage}, TorsoDestroyedDamage:{TorsoDestroyedDamage}, " +
+                $"KnockdownDamage:{KnockdownDamage}, TorsoDestroyedDamage:{TorsoDestroyedDamage}, " +
                 $"HeadHitArmorOnlyMulti:{HeadHitArmorOnlyMulti} ";
         }
     }

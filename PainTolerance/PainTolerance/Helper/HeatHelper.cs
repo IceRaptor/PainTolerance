@@ -13,7 +13,7 @@ namespace PainTolerance.Helper {
 
             float overheatRatio = (float)currentOverheat / (float)overheatRange;
             PainTolerance.Logger.LogIfDebug($"overheatRatio:{overheatRatio}% = currentOverheat:{currentOverheat} / overheatRange:{overheatRange}");
-            return overheatRatio;
+            return overheatRatio * 100f;
         }
     }
 }
