@@ -4,7 +4,8 @@ using PainTolerance.Helper;
 using System;
 
 namespace PainTolerance.Patches {
-    
+
+    [HarmonyAfter(new string[] { "MechEngineer" })]
     [HarmonyPatch(typeof(Mech), "DamageLocation")]
     public static class Mech_DamageLocation {
         public static void Postfix(Mech __instance, WeaponHitInfo hitInfo, ArmorLocation aLoc, Weapon weapon, float totalDamage, int hitIndex, 
@@ -17,7 +18,7 @@ namespace PainTolerance.Patches {
                 float currHeadArmor = __instance.GetCurrentArmor(aLoc);
                 int damageMod = (int)totalDamage;
                 if (totalDamage - currHeadArmor > 0) {                    
-                    damageMod = (int)Math.Floor(damageMod * PainTolerance.Config.HeadHitOnArmorMulti);
+                    damageMod = (int)Math.Floor(damageMod * PainTolerance.Config.HeadHitArmorOnlyMulti);
                     PainTolerance.Logger.Log($"Head hit impacted armor only, reduced damage to:{damageMod}");
                 }
 
@@ -27,6 +28,7 @@ namespace PainTolerance.Patches {
         }
     }
 
+    [HarmonyAfter(new string[] { "MechEngineer" })]
     public static class AmmunitionBox_DamageComponent {
         public static void Prefix(AmmunitionBox __instance, WeaponHitInfo hitInfo, ComponentDamageLevel damageLevel, bool applyEffects, CombatGameState ___combat) {
             if (applyEffects && damageLevel == ComponentDamageLevel.Destroyed && ___combat.Constants.PilotingConstants.InjuryFromAmmoExplosion) {
@@ -101,6 +103,8 @@ namespace PainTolerance.Patches {
         }
     }
 
+    [HarmonyAfter(new string[] { "dZ.Zappo.Pilot_Quirks" })]
+    [HarmonyBefore(new string[] { "us.frostraptor.SkillBasedInit" })]
     [HarmonyPatch(typeof(Pilot), "InjurePilot")]
     public static class Pilot_InjurePilot {
 

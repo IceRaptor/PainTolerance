@@ -57,6 +57,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper\HeatHelper.cs" />
     <Compile Include="Helper\PilotHelper.cs" />
     <Compile Include="PainTolerance.cs" />
     <Compile Include="Patches\Patches.cs" />

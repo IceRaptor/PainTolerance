@@ -22,11 +22,13 @@ namespace PainTolerance {
 
         public float TorsoDestroyedDamage = 10f;
 
-        public float HeadHitOnArmorMulti = 0.5f;
+        public float HeadHitArmorOnlyMulti = 0.5f;
             
         public override string ToString() {
-            return $"Debug:{Debug}, ResistPerGuts:{ResistPerGuts}, ReducePerDamage:{PenaltyPerHeadDamage}, " +
-                $"TorsoDestroyedDamage:{TorsoDestroyedDamage}, KnockdownDamage:{KnockdownDamage}";
+            return $"Debug:{Debug}, ResistPerGuts:{ResistPerGuts}, PenaltyPerHeadDamage:{PenaltyPerHeadDamage}, " +
+                $"PenaltyPerAmmoExplosionRatio:{PenaltyPerAmmoExplosionRatio}, PenaltyPerHeatDamageInjuryRatio:{PenaltyPerHeatDamageInjuryRatio}, " +
+                $"KnockdownDamage:{KnockdownDamage}, ShutdownDamage:{ShutdownDamage}, TorsoDestroyedDamage:{TorsoDestroyedDamage}, " +
+                $"HeadHitArmorOnlyMulti:{HeadHitArmorOnlyMulti} ";
         }
     }
 }
