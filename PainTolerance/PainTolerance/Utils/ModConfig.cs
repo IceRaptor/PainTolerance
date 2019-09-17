@@ -3,8 +3,8 @@ namespace PainTolerance {
 
     public class ModConfig {
 
-        // If true, extra logging will be used
         public bool Debug = false;
+        public bool Trace = false;
 
         public float ResistPerGuts = 10.0f;
 

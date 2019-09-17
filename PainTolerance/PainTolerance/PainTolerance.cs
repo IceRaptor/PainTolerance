@@ -5,11 +5,11 @@ using System.Diagnostics;
 using System.Reflection;
 
 namespace PainTolerance {
-    public class PainTolerance {
+    public class Mod {
 
         public const string HarmonyPackage = "us.frostraptor.PainTolerance";
 
-        public static Logger Logger;
+        public static Logger Log;
         public static string ModDir;
         public static ModConfig Config;
 
@@ -20,21 +20,21 @@ namespace PainTolerance {
 
             Exception settingsE;
             try {
-                PainTolerance.Config = JsonConvert.DeserializeObject<ModConfig>(settingsJSON);
+                Mod.Config = JsonConvert.DeserializeObject<ModConfig>(settingsJSON);
             } catch (Exception e) {
                 settingsE = e;
-                PainTolerance.Config = new ModConfig();
+                Mod.Config = new ModConfig();
             }
 
-            Logger = new Logger(modDirectory, "pain_tolerance");
+            Log = new Logger(modDirectory, "pain_tolerance");
 
             Assembly asm = Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(asm.Location);
-            Logger.Log($"Assembly version: {fvi.ProductVersion}");
+            Log.Info($"Assembly version: {fvi.ProductVersion}");
 
-            Logger.LogIfDebug($"ModDir is:{modDirectory}");
-            Logger.LogIfDebug($"mod.json settings are:({settingsJSON})");
-            Logger.Log($"mergedConfig is:{PainTolerance.Config}");
+            Log.Debug($"ModDir is:{modDirectory}");
+            Log.Debug($"mod.json settings are:({settingsJSON})");
+            Log.Info($"mergedConfig is:{Mod.Config}");
 
             var harmony = HarmonyInstance.Create(HarmonyPackage);
             harmony.PatchAll(asm);

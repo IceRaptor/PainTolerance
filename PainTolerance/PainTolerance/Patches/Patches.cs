@@ -2,6 +2,7 @@
 using Harmony;
 using PainTolerance.Helper;
 using System;
+using System.Collections.Generic;
 
 namespace PainTolerance.Patches {
 
@@ -12,20 +13,20 @@ namespace PainTolerance.Patches {
             AttackImpactQuality impactQuality, DamageType damageType) {
 
             if (aLoc == ArmorLocation.Head) {
-                PainTolerance.Logger.Log($"Head hit from weapon:{weapon?.UIName} for {totalDamage} damage. Quality was:{impactQuality} with type:{damageType}");
+                Mod.Log.Info($"Head hit from weapon:{weapon?.UIName} for {totalDamage} damage. Quality was:{impactQuality} with type:{damageType}");
 
                 float currHeadArmor = __instance.GetCurrentArmor(aLoc);
                 int damageMod = (int)totalDamage;
                 float damageThroughArmor = totalDamage - currHeadArmor;
-                PainTolerance.Logger.LogIfDebug($"TotalDamage:{totalDamage} - Head armor:{currHeadArmor} = throughArmor:{damageThroughArmor}");
+                Mod.Log.Debug($"TotalDamage:{totalDamage} - Head armor:{currHeadArmor} = throughArmor:{damageThroughArmor}");
 
                 if (totalDamage - currHeadArmor <= 0) {                    
-                    damageMod = (int)Math.Floor(damageMod * PainTolerance.Config.HeadHitArmorOnlyMulti);
-                    PainTolerance.Logger.Log($"Head hit impacted armor only, reduced damage to:{damageMod}");
+                    damageMod = (int)Math.Floor(damageMod * Mod.Config.HeadHitArmorOnlyMulti);
+                    Mod.Log.Info($"Head hit impacted armor only, reduced damage to:{damageMod}");
                 }
 
-                ModState.InjuryResistPenalty = damageMod * PainTolerance.Config.PenaltyPerHeadDamage;
-                PainTolerance.Logger.Log($"Setting resist penalty to:{damageMod} x {PainTolerance.Config.PenaltyPerHeadDamage} = {ModState.InjuryResistPenalty}");                
+                ModState.InjuryResistPenalty = damageMod * Mod.Config.PenaltyPerHeadDamage;
+                Mod.Log.Info($"Setting resist penalty to:{damageMod} x {Mod.Config.PenaltyPerHeadDamage} = {ModState.InjuryResistPenalty}");                
             }
         }
     }
@@ -38,14 +39,14 @@ namespace PainTolerance.Patches {
                 int value = __instance.StatCollection.GetValue<int>("CurrentAmmo");
                 int capacity = __instance.ammunitionBoxDef.Capacity;
                 float ratio = (float)value / (float)capacity;
-                PainTolerance.Logger.LogIfDebug($"Ammo explosion ratio:{ratio} = current:{value} / capacity:{capacity}");
-                int resistPenalty = (int)Math.Floor(ratio * PainTolerance.Config.PenaltyPerAmmoExplosionRatio);
-                PainTolerance.Logger.LogIfDebug($"Ammo explosion resist penalty:{resistPenalty} = " +
-                    $"Floor( ratio:{ratio}% * penaltyPerAmmoExplosion:{PainTolerance.Config.PenaltyPerAmmoExplosionRatio} )");
+                Mod.Log.Debug($"Ammo explosion ratio:{ratio} = current:{value} / capacity:{capacity}");
+                int resistPenalty = (int)Math.Floor(ratio * Mod.Config.PenaltyPerAmmoExplosionRatio);
+                Mod.Log.Debug($"Ammo explosion resist penalty:{resistPenalty} = " +
+                    $"Floor( ratio:{ratio}% * penaltyPerAmmoExplosion:{Mod.Config.PenaltyPerAmmoExplosionRatio} )");
 
                 if (ratio >= 0.5f) {
                     ModState.InjuryResistPenalty = resistPenalty;
-                    PainTolerance.Logger.LogIfDebug($"Ammo explosion will reduce resist by: {resistPenalty}");
+                    Mod.Log.Debug($"Ammo explosion will reduce resist by: {resistPenalty}");
                 }
                 
             }
@@ -66,25 +67,25 @@ namespace PainTolerance.Patches {
             if (__instance?.ParentActor?.GetType() == typeof(Mech)) {
                 Mech mech = (Mech)__instance.ParentActor;
                 Statistic receiveHeatDamageInjuryStat = mech.StatCollection.GetStatistic("ReceiveHeatDamageInjury");
-                PainTolerance.Logger.LogIfDebug($"Checking actor with injuryReason:{reason} and receiveHeatDamageInjury:{receiveHeatDamageInjuryStat}");
+                Mod.Log.Debug($"Checking actor with injuryReason:{reason} and receiveHeatDamageInjury:{receiveHeatDamageInjuryStat}");
 
                 // If the below is true, we likely are coming from a ME patch - 
                 // see https://github.com/BattletechModders/MechEngineer/blob/master/source/Features/ShutdownInjuryProtection/Patches/Mech_CheckForHeatDamage_Patch.cs
                 if (reason == InjuryReason.NotSet && mech.IsOverheated && mech.StatCollection.GetStatistic("ReceiveHeatDamageInjury") != null) {
-                    PainTolerance.Logger.LogIfDebug($"Actor received a heatDamage injury, computing overheat ratio.");
+                    Mod.Log.Debug($"Actor received a heatDamage injury, computing overheat ratio.");
                     float overheatRatio = HeatHelper.CalculateOverheatRatio(mech);
 
-                    int overheatPenalty = (int)Math.Floor(overheatRatio * PainTolerance.Config.PenaltyPerHeatDamageInjuryRatio);
-                    PainTolerance.Logger.LogIfDebug($"overheatPenalty:{overheatPenalty} = " +
-                        $"Floor( overheatRatio:{overheatRatio} * penaltyPerOverheatDamage{PainTolerance.Config.PenaltyPerHeatDamageInjuryRatio} )");
+                    int overheatPenalty = (int)Math.Floor(overheatRatio * Mod.Config.PenaltyPerHeatDamageInjuryRatio);
+                    Mod.Log.Debug($"overheatPenalty:{overheatPenalty} = " +
+                        $"Floor( overheatRatio:{overheatRatio} * penaltyPerOverheatDamage{Mod.Config.PenaltyPerHeatDamageInjuryRatio} )");
                     ModState.InjuryResistPenalty = overheatPenalty;
                 }
 
                 // Set explicit damage values for known damage types
                 if (reason == InjuryReason.Knockdown) {
-                    ModState.InjuryResistPenalty = PainTolerance.Config.KnockdownDamage;
+                    ModState.InjuryResistPenalty = Mod.Config.KnockdownDamage;
                 } else if (reason == InjuryReason.SideTorsoDestroyed) {
-                    ModState.InjuryResistPenalty = PainTolerance.Config.TorsoDestroyedDamage;
+                    ModState.InjuryResistPenalty = Mod.Config.TorsoDestroyedDamage;
                 }
             }
 
@@ -93,7 +94,7 @@ namespace PainTolerance.Patches {
                 if (success) {
                     // If the state value is true, then there was already an injury set on the pilot. Do nothign.
                     if (__state) {
-                        PainTolerance.Logger.Log($"Pilot has an outstanding injury, not ignoring!");
+                        Mod.Log.Info($"Pilot has an outstanding injury, not ignoring!");
                     } else {
                         ___needsInjury = false;
                         ___injuryReason = InjuryReason.NotSet;
@@ -113,13 +114,13 @@ namespace PainTolerance.Patches {
 
         public static void Prefix(Pilot __instance, ref int dmg, DamageType damageType) {
             if (damageType == DamageType.Overheat || damageType == DamageType.OverheatSelf) {
-                PainTolerance.Logger.LogIfDebug($"Pilot:{__instance?.Name} will be injured by overheating.");
+                Mod.Log.Debug($"Pilot:{__instance?.Name} will be injured by overheating.");
 
                 Mech mech = __instance?.ParentActor as Mech;
                 float overheatRatio = HeatHelper.CalculateOverheatRatio(mech);
-                int overheatPenalty = (int)Math.Floor(overheatRatio * PainTolerance.Config.PenaltyPerHeatDamageInjuryRatio);
-                PainTolerance.Logger.LogIfDebug($"overheatPenalty:{overheatPenalty} = " +
-                    $"Floor( overheatRatio:{overheatRatio} * penaltyPerOverheatDamage{PainTolerance.Config.PenaltyPerHeatDamageInjuryRatio}");
+                int overheatPenalty = (int)Math.Floor(overheatRatio * Mod.Config.PenaltyPerHeatDamageInjuryRatio);
+                Mod.Log.Debug($"overheatPenalty:{overheatPenalty} = " +
+                    $"Floor( overheatRatio:{overheatRatio} * penaltyPerOverheatDamage{Mod.Config.PenaltyPerHeatDamageInjuryRatio}");
                 ModState.InjuryResistPenalty = overheatPenalty;
 
                 bool success = PilotHelper.MakeResistCheck(__instance);
@@ -142,5 +143,5 @@ namespace PainTolerance.Patches {
             ModState.InjuryResistPenalty = -1;
         }
     }
-    
+
 }

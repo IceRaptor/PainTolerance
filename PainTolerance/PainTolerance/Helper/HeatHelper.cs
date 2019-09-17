@@ -9,10 +9,10 @@ namespace PainTolerance.Helper {
 
             int currentHeat = mech.CurrentHeat;
             int currentOverheat = currentHeat - overheatLevel;
-            PainTolerance.Logger.LogIfDebug($"Actor:{mech.DisplayName}_{mech?.pilot?.Name} has maxHeat:{maxHeat}, overheat:{overheatLevel}, currentHeat:{currentHeat}");
+            Mod.Log.Debug($"Actor:{mech.DisplayName}_{mech?.pilot?.Name} has maxHeat:{maxHeat}, overheat:{overheatLevel}, currentHeat:{currentHeat}");
 
             float overheatRatio = (float)currentOverheat / (float)overheatRange;
-            PainTolerance.Logger.LogIfDebug($"overheatRatio:{overheatRatio}% = currentOverheat:{currentOverheat} / overheatRange:{overheatRange}");
+            Mod.Log.Debug($"overheatRatio:{overheatRatio}% = currentOverheat:{currentOverheat} / overheatRange:{overheatRange}");
             return overheatRatio * 100f;
         }
     }

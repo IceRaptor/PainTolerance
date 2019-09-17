@@ -27,12 +27,12 @@ namespace PainTolerance {
             foreach (Ability ability in pilot.Abilities.Distinct()) {
                 //PainTolerance.Logger.LogIfDebug($"Pilot {pilot.Name} has ability:{ability.Def.Id}.");
                 if (ability.Def.Id.ToLower().Equals(abilityDefIdL5.ToLower()) || ability.Def.Id.ToLower().Equals(abilityDefIdL8.ToLower())) {
-                    PainTolerance.Logger.LogIfDebug($"Pilot {pilot.Name} has targeted ability:{ability.Def.Id}, boosting their modifier.");
+                    Mod.Log.Debug($"Pilot {pilot.Name} has targeted ability:{ability.Def.Id}, boosting their modifier.");
                     mod += 1;
                 } 
 
             }
-            PainTolerance.Logger.LogIfDebug($"Pilot {pilot.Name} has final modifier:{mod} from normalizedSkill:{normalizedVal} and ability boosts.");
+            Mod.Log.Debug($"Pilot {pilot.Name} has final modifier:{mod} from normalizedSkill:{normalizedVal} and ability boosts.");
             return mod;
         }
 
@@ -57,24 +57,24 @@ namespace PainTolerance {
 
         public static bool MakeResistCheck(Pilot pilot) {
             int normalizedGunnery = PilotHelper.GetGunneryModifier(pilot);
-            float baseResist = normalizedGunnery * PainTolerance.Config.ResistPerGuts;
+            float baseResist = normalizedGunnery * Mod.Config.ResistPerGuts;
             float resistPenalty = ModState.InjuryResistPenalty;
             float resistChance = Math.Max(0, baseResist - resistPenalty);
-            PainTolerance.Logger.LogIfDebug($"baseResist:{baseResist} - resistPenalty:{resistPenalty} = resistChance:{resistChance}");
+            Mod.Log.Debug($"baseResist:{baseResist} - resistPenalty:{resistPenalty} = resistChance:{resistChance}");
 
-            int check = PainTolerance.Random.Next(0, 100);
+            int check = Mod.Random.Next(0, 100);
             bool success = resistChance >= check;
             if (success) {
-                PainTolerance.Logger.Log($"Pilot:{pilot?.Name} resisted injury with check:{check} <= resistChance:{resistChance}");
+                Mod.Log.Info($"Pilot:{pilot?.Name} resisted injury with check:{check} <= resistChance:{resistChance}");
             } else {
-                PainTolerance.Logger.LogIfDebug($"Pilot failed to resist injury with check:{check} > resistChance:{resistChance}");
+                Mod.Log.Debug($"Pilot failed to resist injury with check:{check} > resistChance:{resistChance}");
             }
 
             return success;
         }
 
         public static void LogPilotStats(Pilot pilot) {
-            if (PainTolerance.Config.Debug) {
+            if (Mod.Config.Debug) {
                 int normedGuts = NormalizeSkill(pilot.Guts);
                 int gutsMod = GetGutsModifier(pilot);
                 int normdPilot = NormalizeSkill(pilot.Piloting);
@@ -82,7 +82,7 @@ namespace PainTolerance {
                 int normedTactics = NormalizeSkill(pilot.Tactics);
                 int tacticsMod = GetTacticsModifier(pilot);
 
-                PainTolerance.Logger.LogIfDebug($"{pilot.Name} skill profile is " +
+                Mod.Log.Debug($"{pilot.Name} skill profile is " +
                     $"g:{pilot.Guts}->{normedGuts}={gutsMod}" +
                     $"p:{pilot.Piloting}->{normdPilot}={pilotingMod} " +
                     $"t:{pilot.Tactics}->{normedTactics}={tacticsMod} "
