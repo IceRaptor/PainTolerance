@@ -1,7 +1,7 @@
 {
     "Name": "PainTolerance",
     "Enabled": true,
-    "Version": "0.1.0",
+    "Version": "0.3.0",
     "Description": "Makes pilots resist injuries more intelligently.",
     "Author": "IceRaptor",
     "Website": "https://github.com/IceRaptor/PainTolerance",
