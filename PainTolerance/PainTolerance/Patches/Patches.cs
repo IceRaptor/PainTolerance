@@ -2,27 +2,32 @@
 using Harmony;
 using PainTolerance.Helper;
 using System;
-using System.Collections.Generic;
 
 namespace PainTolerance.Patches {
 
     [HarmonyAfter(new string[] { "MechEngineer" })]
     [HarmonyPatch(typeof(Mech), "DamageLocation")]
     public static class Mech_DamageLocation {
-        public static void Prefix(Mech __instance, WeaponHitInfo hitInfo, ArmorLocation aLoc, Weapon weapon, float totalDamage, int hitIndex, 
-            AttackImpactQuality impactQuality, DamageType damageType) {
+        public static void Prefix(Mech __instance, WeaponHitInfo hitInfo, ArmorLocation aLoc, Weapon weapon, float totalArmorDamage, float directStructureDamage, 
+            int hitIndex, AttackImpactQuality impactQuality, DamageType damageType) {
 
             if (aLoc == ArmorLocation.Head) {
-                Mod.Log.Info($"Head hit from weapon:{weapon?.UIName} for {totalDamage} damage. Quality was:{impactQuality} with type:{damageType}");
+                Mod.Log.Info($"Head hit from weapon:{weapon?.UIName} for {totalArmorDamage} armor damage and {directStructureDamage} structure damage. " +
+                    $"Quality was:{impactQuality} with type:{damageType}");
 
                 float currHeadArmor = __instance.GetCurrentArmor(aLoc);
-                int damageMod = (int)totalDamage;
-                float damageThroughArmor = totalDamage - currHeadArmor;
-                Mod.Log.Debug($"TotalDamage:{totalDamage} - Head armor:{currHeadArmor} = throughArmor:{damageThroughArmor}");
+                int damageMod = (int)Math.Ceiling(totalArmorDamage);
+                float damageThroughArmor = totalArmorDamage - currHeadArmor;
+                Mod.Log.Debug($"TotalArmorDamage:{totalArmorDamage} - Head armor:{currHeadArmor} = throughArmor:{damageThroughArmor}");
 
-                if (totalDamage - currHeadArmor <= 0) {                    
+                if (totalArmorDamage - currHeadArmor <= 0) {                    
                     damageMod = (int)Math.Floor(damageMod * Mod.Config.HeadHitArmorOnlyMulti);
                     Mod.Log.Info($"Head hit impacted armor only, reduced damage to:{damageMod}");
+                }
+
+                if (directStructureDamage != 0) {
+                    Mod.Log.Debug($"Attack inflicted ${directStructureDamage}, adding to total resist damage.");
+                    damageMod += (int)Math.Ceiling(directStructureDamage);
                 }
 
                 ModState.InjuryResistPenalty = damageMod * Mod.Config.PenaltyPerHeadDamage;
