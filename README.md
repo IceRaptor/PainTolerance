@@ -4,6 +4,8 @@ This mod for the [HBS BattleTech](http://battletechgame.com/) makes skilled pilo
 
 This check is also made in the event of a Shutdown, if the optional _ShutdownCausesInjury_ value is set to true. This value can be set in either the `CombatGameConstants.json`, or can be introduced by [MechEngineer](https://github.com/BattletechModders/MechEngineer/blob/master/source/Features/ShutdownInjuryProtection/Patches/MechShutdownSequence_CheckForHeatDamage_Patch.cs). This check is also made if you are using MechEngineer's  [ReceiveHeatDamageInjury](https://github.com/BattletechModders/MechEngineer/blob/master/source/Features/ShutdownInjuryProtection/Patches/Mech_CheckForHeatDamage_Patch.cs) option. 
 
+This mod requires [https://github.com/iceraptor/IRBTModUtils/]. Grab the latest release of __IRBTModUtils__ and extract it in your Mods/ directory alongside of this mod.
+
 ## Details
 
 Each pilot's resist check is defined by their rating in the Guts skill, as well as any Abilities in that tree that have been taken. The table below defines the guts modifier that will be used as a modifier base. This value is then multiplied by the **ResistPerGuts** configuration value to determine a base check level. Pilot skills of 11-13 are used for elite pilots in the RogueTech mod. Player pilots cannot reach this level.
